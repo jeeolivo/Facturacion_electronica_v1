@@ -1,0 +1,1 @@
+from .firmador import get_dte_firma

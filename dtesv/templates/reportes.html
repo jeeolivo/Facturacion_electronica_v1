@@ -1,0 +1,47 @@
+
+<!-- dtesv/templates/dtesv/reportes.html -->
+ {% load static %}
+<link rel="stylesheet" href="{% static 'css/reportes.css' %}">
+
+<div class="contenedor">
+    <h3 class="titulo">📊 Reportes de Facturación Electrónica</h3>
+    <p class="subtitulo">Aquí irán los gráficos y tablas de reportes.</p>
+
+    <form method="get" class="item">
+            <div class="d-flex align-items-center justify-content-between fgroup">
+                <label>Desde</label>
+                <input type="date" name="desde" value="{{ desde }}" class="form-control">
+            </div>
+            <div class="d-flex align-items-center justify-content-between fgroup">
+                <label>Hasta</label>
+                <input type="date" name="hasta" value="{{  hasta  }}" class="form-control">
+            </div>
+            <div class="d-flex align-items-center fgroup">
+                <label>Tipo Receptor</label>
+                <select name="tipo" class="form-control">
+                    <option value="">-- Todos --</option>
+                    <option value="cliente" {% if tipo == "cliente" %}selected{% endif %}>Cliente</option>
+                    <option value="proveedor" {% if tipo == "proveedor" %}selected{% endif %}>Proveedor</option>
+                </select>
+            </div>        
+            <div class="fgroup">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+        </form>
+        <p class="resultado-busqueda">
+            Resultados
+            {% if desde and hasta %} del {{ desde }} al {{ hasta }}{% endif %}
+            {% if tipo %} para tipo receptor: <strong>{{ tipo|capfirst }}</strong>{% endif %}
+            — <strong>{{ total_clientes }}</strong> clientes encontrados
+        </p>
+
+        <div class="download">
+            <button id="btn-exportar-excel" data-export-url="{% url 'dtesv:exportar_excel' %}" class="btn btn-success cmd-same">
+                📥 Facturas x Cliente
+            </button>
+            <button id="btn-exportar-documentos" data-export-url="{% url 'dtesv:exportar_documentos_excel' %}" class="btn btn-danger cmd-same">
+                📄 Estado de Documentos
+            </button>
+        </div>
+    </div>
+</div>

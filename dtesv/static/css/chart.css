@@ -1,0 +1,149 @@
+/* Estilo para el contenedor del gráfico */
+.chart-container {
+  display: flex;
+  justify-content: space-between; /* Espacio entre los graficos */
+  /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  max-height: 400px;
+   /*  width: 75%; Ajusta el ancho del contenedor del gráfico según tus necesidades */
+  margin: 0 auto;  /* Centra el contenedor en la página */
+  margin-bottom: 20px; /* Espacio Inferior */
+}
+
+.chart {
+  flex: 1;          /* Cada gráfico ocupa el mismo ancho */
+  margin: 0 10px;   /* Espacio entre gráficos */
+  width: 100%;      /* Ajusta el ancho del gráfico al 100% del contenedor */
+  max-height: 400px;
+     /* max-width: 600px Establece un ancho máximo para el gráfico */
+  background-color: #f1f1f1;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
+  background-color: #f1f1f1;
+  border-radius: 10px;
+}
+
+.chart-extended{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;          /* Cada gráfico ocupa el mismo ancho */
+  margin: 0;   /* Espacio entre gráficos */
+  width: 80%;      /* Establece un ancho máximo para el gráfico */
+  max-height: 70%;
+  /* max-width: 90%;   /* Establece un ancho máximo para el gráfico */
+  background-color: #f1f1f1;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
+  background-color: #f1f1f1;
+  border-radius: 10px;
+}
+
+.chart-center{
+  display: flex;                /* Activa el modelo flex */
+  justify-content: center;      /* Centra horizontalmente */
+  align-items: center;          /* Centra verticalmente */
+  height: 100%;                 /* Establece una altura si es necesario */
+  text-align: right;            /* Alinea el texto a la derecha */
+}
+
+.dt-content1, .dt-content2 {
+  flex: 1;                      /* Ambos divs ocuparán el mismo ancho */
+  padding: 15px;                /* Agrega un poco de espacio interior */
+  border: 1px solid #ccc;     /* Opcional: agrega un borde para visualización */
+  margin: 1%;                   /* Opcional: espacio entre los divs */
+}
+
+.txt-content1{
+  text-align: right;
+  margin-right: 1%;
+}
+
+/* Estilo para la sección de documentos no enviados */
+.documentos-no-enviados {
+  flex: 1;
+  border: 1px solid #ccc;
+  width: 100%;
+  overflow-y: auto;             /* Asegúrate de que la tabla tenga barra de desplazamiento si es necesario */
+  max-height: 400px;            /* Controla la altura máxima para que no se desborde */  
+  margin: 0 auto;               /* Centra el contenedor en la página */
+  margin-top: 25px;             /* Espacio Superior */
+            /* margin-bottom: 10px; Espacio Inferior */
+
+}
+
+/* Estimlo para alinear un texto en torno al grafico */
+.chart-align {
+  width: 100%;
+  /* Ajusta el ancho del gráfico al 100% del contenedor */
+  max-width: 600px;
+  /* Establece un ancho máximo para el gráfico */
+  background-color: #ffffff;
+}
+
+/* Asegurarte de que el gráfico y la tabla tengan una proporción adecuada en dispositivos más pequeños */
+@media (max-width: 768px) {
+  .dt-content1, .dt-content2 {
+      flex: 0 0 100%; /* Hacer que las columnas ocupen el 100% en pantallas pequeñas */
+      max-width: 100%;
+  }
+}
+
+/* Asegúrate de que la tabla use todo el ancho */
+.table {
+  margin: auto;                 /* Establece el margen automático para centrar la tabla */
+  /* border-collapse: collapse; Opcional: elimina el espacio entre celdas */
+  width: 100%;                   /* Establece el ancho de la tabla, ajusta según sea necesario */  
+}
+
+/* Estilo para las secciones */
+.filters-section {
+  margin-bottom: 25px;
+}
+
+/* Estilo para el texto alineado a la derecha */
+.txtRight {
+  text-align: right;
+  margin-right: 1%;
+}
+
+/* Estilo para el texto alineado al centro */
+.txtCenter {
+  text-align: center;
+}
+
+.green-icon {
+  color: green;
+}
+
+.red-icon {
+  color: red;
+}
+
+.email-section {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  width: 100%;
+}
+/* Ajusta el ancho de las secciones */
+.chart-section {
+  width: 100%;
+  margin-bottom: 20px; /* Agregar espacio debajo del gráfico */
+}
+
+.email-card {
+  padding: 10px;
+  background-color: #e0f7fa;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.email-card p {
+  font-size: 14px;
+  font-weight: bold;
+  color: #00796b;
+}
+

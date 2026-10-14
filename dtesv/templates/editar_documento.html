@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+{% load static %}
+{% csrf_token %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/receptor.css' %}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4 text-center">Información del Documento</h2>
+
+  {% if mensaje_exito %}
+  <div id="mensaje-exito" class="alert alert-success mt-3 text-center">
+    {{ mensaje_exito }}
+  </div>
+  {% endif %}
+  {% if form.errors %}
+  <div class="alert alert-danger">
+    {{ form.errors }}
+  </div>
+  {% endif %}
+
+  <div class="card shadow-lg mb-4">
+    <div class="card-header bg-primary text-white">
+      <h4>Detalles del Documento</h4>
+    </div>
+    <div class="card-body">
+      <form method="post" class="needs-validation" novalidate>
+        <input type="hidden" name="_method" value="PUT">
+        {% csrf_token %}
+
+        <!-- Sección de Información General -->
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <strong>{{ form.codigoGeneracion.label_tag }}</strong> {{ form.initial.codigoGeneracion }}
+          </div>
+          <div class="col-md-6">
+            <strong>{{ form.selloRecibido.label_tag }}:</strong>{{ form.selloRecibido}}
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <strong>{{ form.fecEmi.label_tag }}</strong> {{ form.initial.fecEmi }}
+          </div>
+          <div class="col-md-6">
+            <strong>{{ form.tipodocumento.label_tag }}</strong> {{ form.tipodocumento }}
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <strong>{{ form.num_documento.label_tag }}</strong> {{ form.initial.num_documento }}
+          </div>
+          <div class="col-md-6">
+            <strong>Cliente:</strong> {{ form.initial.receptor_id }}
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <strong>{{ form.estado.label_tag }}</strong> {{ form.initial.estado }}
+          </div>
+          <!-- Campo para mostrar el CCF relacionado -->
+          {% if form.initial.tipodocumento.codigo == '05' %}
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="form.initial.numeroDocumento_rel_guid">CCF Relacionado:</label>
+                {{ form.initial.numeroDocumento_rel_guid }}
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Sección de Detalles del Documento (Tabla) -->
+        <div class="card shadow-lg mb-4">
+          <div class="card-header bg-primary text-white">
+            <h4>Detalle de Productos</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>codigo</th>
+                    <th>cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>ventaGravada</th>
+                    <!-- Agrega más columnas según los campos en tu modelo DocumentosDetalle -->
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for detalle in detalle_queryset %}
+                  <tr>
+                    <td>{{ detalle.codigo }}</td>
+                    <td>{{ detalle.cantidad }}</td>
+                    <td>{{ detalle.precioUni }}</td>
+                    <td>{{ detalle.ventaGravada }}</td>
+                    <!-- Repite esto para cada campo en tu modelo DocumentosDetalle -->
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Sección de Totales -->
+          <div class="card shadow-lg mb-4">
+            <div class="card-header bg-primary text-white">
+              <h4>Totales del Documento</h4>
+            </div>
+            <div class="card-body text-right">
+              <div class="row">
+                <div class="col-md-6 mb-3 text-right">
+                  <p><strong>{{ form.totalGravada.label_tag }}</strong></p>
+                  <p>{{ form.initial.totalGravada }}</p>
+                </div>
+                <div class="col-md-6 mb-3 text-right">
+                  <p><strong>{{ form.iva.label_tag }}</strong></p>
+                  <p>{{ form.initial.iva }}</p>
+                </div>
+                <div class="col-md-6 mb-3 text-right">
+                  <p><strong>{{ form.ivaPerci1.label_tag }}</strong></p>
+                  <p>{{ form.initial.ivaPerci1 }}</p>
+                </div>
+                <div class="col-md-6 mb-3 text-right">
+                  <p><strong>{{ form.totalPagar.label_tag }}</strong></p>
+                  <p><strong>{{ form.initial.totalPagar }}</strong></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Sección de Botones -->
+        <div class="text-center mt-4">
+          {% if form.initial.estado == 'PROCESADO' or form.initial.estado == 'ERR_INVALI' %}
+          {% if form.initial.tipodocumento == '03' %}
+          <div class="mt-3">
+            <button id="btnCrearNotaCredito" type="button" class="btn btn-primary"
+              onclick="crearNotaCredito('{{ form.initial.codigoGeneracion }}')">Crear Nota de Crédito</button>
+          </div>
+          {% endif %}
+          <!-- Botón para crear Nota de Débito (solo si es una NC) -->
+          {% if form.initial.tipodocumento == '05' %}
+          <div class="mt-3">
+            <button id="btnCrearNotaDebito" type="button" class="btn btn-primary"
+              onclick="crearNotaDebito('{{ form.initial.codigoGeneracion }}')">Crear Nota de Débito</button>
+          </div>
+          {% endif %}
+          {% endif %}
+          <!-- Agrega aquí otros campos o contenido -->
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+
+  let enviandoNotaCredito = false;
+
+  function crearNotaCredito(codigoGeneracion) {
+    
+    if (enviandoNotaCredito) {
+      console.warn("Solicitud ya enviada, ignorando...");
+      return;
+    }
+
+    enviandoNotaCredito = true;
+
+    // 🔒 Bloqueo visual y lógico
+    $('#btnCrearNotaCredito')
+      .prop('disabled', true)
+      .text('Procesando...');
+
+    $.ajax({
+      url: '/dtesv/crear_nota_credito/' + codigoGeneracion + '/',
+      type: 'POST',
+      headers: {
+        'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()
+      },
+      success: function (response) {
+
+        console.log(response);
+
+        if (response.success === true) {
+
+          $('#mensaje-exito').html(
+            '<div class="alert alert-success mt-3">' + response.message + '</div>'
+          ).fadeIn("slow");
+
+          setTimeout(function () {
+            $("#mensaje-exito").fadeOut("slow");
+          }, 50000);
+
+          if (response.message === 'OK') {
+            $('#btnCrearNotaCredito').hide();
+          }
+        }
+      },
+      error: function (error) {
+        console.error(error);
+
+        // 🔓 Liberar bloqueo si falla
+        enviandoNotaCredito = false;
+
+        $('#btnCrearNotaCredito')
+          .prop('disabled', false)
+          .text('Crear Nota Crédito');
+      }
+    });
+    // // Crear un objeto con los valores que necesitas enviar
+    // var datos = {
+    //   'codigoGeneracion': codigoGeneracion,
+    //   // Agrega más campos según sea necesario
+    // };
+    // console.log(datos);
+    // // Enviar una solicitud AJAX a la vista de Django
+    // // Puedes usar la biblioteca jQuery o Fetch API para esto
+    // // Aquí se presenta un ejemplo usando jQuery
+    // $.ajax({
+    //   url: '/dtesv/crear_nota_credito/' + codigoGeneracion + '/',
+    //   type: 'POST',
+    //   headers: {
+    //     'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()
+    //   },
+    //   success: function (response) {
+    //     // Manejar la respuesta si es necesario
+    //     console.log(response);
+    //     if (response.success === true) {
+    //       // Mostrar un mensaje de éxito personalizado
+    //       $('#mensaje-exito').html('<div class="alert alert-success mt-3">' + response.message + '</div>');
+
+    //       // Muestra el mensaje con una animación de desvanecimiento
+    //       $("#mensaje-exito").fadeIn("slow");
+
+    //       // Después de 5 segundos, oculta el mensaje
+    //       setTimeout(function () {
+    //         $("#mensaje-exito").fadeOut("slow");
+    //       }, 50000); // Cambia este valor si deseas que el mensaje se muestre durante más o menos tiempo
+
+    //       // Verificar el mensaje y ocultar el botón si es 'OK'
+    //       if (response.message === 'OK') {
+    //         $('#btnCrearNotaCredito').hide();
+    //       }
+    //     }
+    //   },
+    //   error: function (error) {
+    //     console.error(error);
+    //   }
+    // });
+  }
+
+  let enviandoNotaDebito = false;
+
+  function crearNotaDebito(codigoGeneracion) {
+    if (enviandoNotaDebito) {
+      console.warn("Solicitud ya enviada, ignorando...");
+      return;
+    }
+
+    enviandoNotaDebito = true;
+
+    $('#btnCrearNotaDebito')
+      .prop('disabled', true)
+      .text('Procesando...');
+
+    $.ajax({
+      url: '/dtesv/crear_nota_debito/' + codigoGeneracion + '/',
+      type: 'POST',
+      headers: {
+        'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()
+      },
+      success: function (response) {
+
+        if (response.success === true) {
+
+          $('#mensaje-exito').html(
+            '<div class="alert alert-success mt-3">' + response.message + '</div>'
+          ).fadeIn("slow");
+
+          if (response.message === 'OK') {
+            $('#btnCrearNotaDebito').hide();
+          }
+        }
+      },
+      error: function (error) {
+        console.error(error);
+
+        // 🔓 liberar si hubo error
+        enviandoNotaDebito = false;
+        $('#btnCrearNotaDebito')
+          .prop('disabled', false)
+          .text('Crear Nota Débito');
+      }
+    });
+    // var datos = {
+    //   'codigoGeneracion': codigoGeneracion,
+    // };
+    // console.log(datos);
+    // $.ajax({
+    //   url: '/dtesv/crear_nota_debito/' + codigoGeneracion + '/',
+    //   type: 'POST',
+    //   headers: {
+    //     'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()
+    //   },
+    //   success: function (response) {
+    //     console.log(response);
+    //     if (response.success === true) {
+    //       $('#mensaje-exito').html('<div class="alert alert-success mt-3">' + response.message + '</div>');
+    //       $("#mensaje-exito").fadeIn("slow");
+    //       setTimeout(function () {
+    //         $("#mensaje-exito").fadeOut("slow");
+    //       }, 50000);
+    //       if (response.message === 'OK') {
+    //         $('#btnCrearNotaDebito').hide();
+    //       }
+    //     }
+    //   },
+    //   error: function (error) {
+    //     console.error(error);
+    //   }
+    // });
+  }
+</script>
+{% endblock %}

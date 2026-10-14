@@ -1,0 +1,28 @@
+/* Estilo para el contenedor del gráfico */
+.chart-container {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  width: 50%; /* Ajusta el ancho del contenedor del gráfico según tus necesidades */
+  margin: 0 auto; /* Centra el contenedor en la página */
+}
+
+.chart {
+  width: 100%; /* Ajusta el ancho del gráfico al 100% del contenedor */
+  max-width: 400px; /* Establece un ancho máximo para el gráfico */
+  background-color: #f1f1f1;
+}
+
+
+.chart {
+    width: 20%;
+    height: 20%;
+    background-color: #f1f1f1;
+}
+.green-icon {
+     color: green;
+  }
+
+.red-icon {
+      color: red;
+    }

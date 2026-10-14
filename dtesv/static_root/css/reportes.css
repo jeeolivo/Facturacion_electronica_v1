@@ -1,0 +1,107 @@
+.contenedor {
+    background: #ffffff;
+    display: grid;
+    justify-items: stretch;
+    justify-content: center;
+    align-items: start;
+    gap: 5px;
+    padding: 15px;
+
+}
+
+.item {
+    background: #ffffff;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-evenly;
+}
+
+.item input,
+select {
+    vertical-align: text-top;
+    height: 38px;
+    padding: 5px, 5px;
+    font-size: 1rem;
+}
+
+.item label {
+    vertical-align: text-top;
+    height: 500;
+    /* margin-bottom: 4px; */
+}
+
+.fgroup {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 2em;
+    font-family: sans-serif;
+    padding: 10px;
+    background: rgb(255, 255, 255);
+}
+
+.download {
+    background: #ffffff;
+    min-height: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    /* Permitir que bajen si no caben */
+    justify-content: space-evenly;
+    /* Centrado horizontal */
+    align-items: center;
+    /* Centrado vertical */
+    align-self: center;
+    /*gap: 2rem;                
+    /* Espacio entre botones */
+    padding: 1rem;
+    /* Espaciado interior opcional */
+}
+
+
+.cmd-same {
+    width: 250px;
+    /* Mismo ancho para ambos botones */
+    height: 40px;
+    /* Alto uniforme */
+    font-weight: 500;
+    font-size: 16px;
+}
+
+
+#cargando-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner-overlay {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+
+
+/* En pantallas pequeñas: apilar verticalmente */
+@media (max-width: 768px) {
+    .item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .boton-filtrar {
+        align-self: stretch;
+    }
+}
+
+
+@media (prefers-reduced-motion:reduce) {
+    .cmd {
+        transition: none
+    }
+}

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+{% csrf_token %}
+
+
+<head>
+    <title>Documentos</title>
+
+    <!--Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    <!--datatables-->
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">-->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <!--Font Awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!--Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+
+
+</head>
+
+<body>
+
+    <h2>Documentos</h2>
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="input-group">
+                <label for="fecha_desde" class="input-group-text">Fecha desde:</label>
+                <input type="date" id="fecha_desde" name="fecha_desde" class="form-control">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <label for="fecha_hasta" class="input-group-text">Fecha hasta:</label>
+                <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control">
+            </div>
+        </div>
+        <div class="col-md-1" id="loader-container">
+            <button id="busca_ids" class="btn btn-sm btn-light" title="Buscar">
+                <i class="fa fa-search"></i> Buscar
+            </button>
+            <div id="loader" style="display: none;">
+                <div style="display: flex; align-items: center;">
+                    <img src="{% static 'img/wait.gif' %}" alt="Cargando..." style="margin-right: 5px;" />
+                    <span>Cargando información...</span>
+                </div>
+            </div>
+        </div>
+        {% if perms.dtesv.change_documentos %}
+        <div class="col-md-7">
+            <div class="text-md-end">
+                <button id="generarPDFS" class="btn btn-sm btn-warning" title="Generar PDf's">
+                    <i class="fa-solid fa-file-pdf"></i> Descargar PDf's
+                </button>
+            </div>
+        </div>
+        {% endif %}
+        {% if es_admin %}
+        <div class="col-md-12">
+            <div class="text-md-end">
+                <button id="reprocess" class="btn btn-sm btn-primary" title="Reprocesar">
+                    <i class="fa fa-cog"></i> Reprocesar
+                </button>
+            </div>
+            <div class="text-md-end">
+                <button id="btn-contingencia" class="btn btn-sm btn-danger custom-width" title="Generar Contingencia" onclick="manejarContingencia()">
+                    <i class="fa-info-circle"> </i>Contingencia
+                </button>
+            </div>   
+        </div>
+        {% endif %}
+
+        <div class="col-md-12">
+
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-eye"></i> <!-- Icono de ojo -->
+                </button>
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-start dropdown-menu-lg" aria-labelledby="dropdownMenuButton" id="columnDropdown">
+                    <!-- Opciones de la lista desplegable -->
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+    <div id="loader" style="display: none;">
+        <img src="{% static 'img/wait.gif' %}" alt="Cargando..." />
+    </div>
+    
+    
+    
+    
+    <div class="table-responsive">
+        <table id="myTable" class="table">
+            <thead>
+                <tr>
+                    <th class="centered">Numero Documento</th>
+                    <th class="centered">Tipo Documento</th>
+                    <!--<th class="centered" >EST</th>-->
+                    <th class="centered">Estado Envio</th>
+                    <th class="centered">Codigo de Generacion</th>
+                    <th class="centered">Receptor</th>
+                    <th class="centered">Ruta Entrega</th>
+                    <th class="centered">Monto</th>
+                    <th class="centered">fecha Emision</th>
+                    <th class="centered">Hora Emision</th>
+                    <th class="centered">fecha Proceso MH</th>
+                    <th class="centered">Sello recibido</th>
+                    <th class="centered">Observaciones MH</th>
+                    <th class="centered">Observaciones de Proceso</th>
+                    <th class="centered">Estado Anulacion</th>
+                    <th class="centered">Fecha Anulacion</th>
+                    {% if perms.dtesv.change_documentos %}
+                    <th class="centered">Opciones del Documento</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for documento in documentos %}
+                <tr>
+                    <td>{{ documento.num_documento }}</td>
+                    <td>{{ documento.tipo_documento }}</td>
+                    <td>
+                        {% if documento.estado == "PROCESADO" %}
+                        <!-- <span class="text-success">&#10004;</span>   Cheque verde -->
+                        <span class="badge bg-success">{{ documento.estado }}</span>
+                        {% elif documento.estado == "RECHAZADO" %}
+                        <!--<span class="text-danger">&#10006;</span>  Cheque rojo -->
+                        <span class="badge bg-danger">{{ documento.estado }}</span>
+                        {% elif documento.estado == "INVALIDADO" %}
+                        <span class="badge bg-secondary">{{ documento.estado }}</span>
+                        <!-- <span class="text-danger">&#8861;</span> Cheque rojo -->
+                        {% elif documento.estado == "ENVIADO" %}
+                        <span class="badge bg-warning">{{ documento.estado }}</span>
+                        {% elif documento.estado == "ANULADONC" %}
+                        <span class="badge bg-dark">{{ documento.estado }}</span>
+                        {% elif documento.estado == "ANULADOND" %}
+                        <span class="badge bg-dark">{{ documento.estado }}</span>                        
+                        {% elif documento.estado == "Nuevo" %}
+                        <span class="badge bg-info">{{ documento.estado }}</span>
+                        {% elif documento.estado == "ERR_INVALI" %}
+                        <span class="badge bg-warning">{{ documento.estado }}</span>
+                        {% else %}
+                        <!--<span class="text-warning">&#9965;</span> Cheque rojo -->
+                        <span class="badge bg-danger">{{ documento.estado }}</span>
+                        {% endif %}
+                    </td>
+                    <!-- <td>{{ documento.estado }}</td> -->
+                    <td>{{ documento.codigoGeneracion }}</td>
+                    <td>{{ documento.receptor_id }}</td>
+                    <td>{{ documento.rutaEntrega }}</td>
+                    <td>${{ documento.totalPagar|floatformat:"2" }}</td>
+                    <td>{{ documento.fecEmi }}</td>
+                    <td>{{ documento.horEmi|time:"H:i:s" }}</td>
+                    <td>{{ documento.fecha_proceso_mh }}</td>
+                    <td>{{ documento.selloRecibido }}</td>
+                    <td class="centered truncate-text" data-toggle="popover">{{ documento.observaciones_mh }}</td>
+                    <td>{{ documento.observacion_proceso }}</td>
+                    <td>{{ documento.estado_anulado }}</td>
+                    <td>{{ documento.fecha_anula_mh }}</td>
+                    {% if perms.dtesv.change_documentos %}
+                    <td>
+                        {% if documento.estado == "PROCESADO" %}
+                        <button id="pdf_gen" class="btn btn-sm btn-danger" title="Generar PDF"> <i id="pdf_icon" class="fa-solid fa-file-pdf"></i></button>
+                        <button id="sent_email" class="btn btn-sm btn-primary" title="Enviar Email"><i class="fa fa-envelope"></i></button>
+                        <button id="edit_cliente" class="btn btn-sm btn-danger" title="Editar Cliente"><i class="fa-sharp fa-solid fa-circle-exclamation"></i></button>
+                        <button id="download_docs" class="btn btn-sm btn-warning" title="Descargar Archivos"><i class="fa-solid fa-download"></i></button>
+                        {% elif documento.estado == "INVALIDADO" %}
+                        <button id="edit_cliente" class="btn btn-sm btn-danger" title="Editar Cliente"><i class="fa-sharp fa-solid fa-circle-exclamation"></i></button>
+                        <button id="download_docs" class="btn btn-sm btn-warning" title="Descargar Archivos"><i class="fa-solid fa-download"></i></button>                        
+                        {% elif documento.estado == "RECHAZADO" %}
+                        <button id="edit_cliente" class="btn btn-sm btn-danger"><i class="fa-sharp fa-solid fa-circle-exclamation"></i></button>
+                        <button id="sent_mh" class="btn btn-sm btn-light" title="re-enviar a hacienda"><i id="paper-plane_icon" class="fa-solid fa-paper-plane"></i></button>
+                        {% elif documento.estado == "Nuevo" %}
+                        <button id="sent_mh" class="btn btn-sm btn-success" title="Enviar a Hacienda"><i
+                                id="paper-plane_icon" class="fa-solid fa-paper-plane"></i></button>
+                        {% elif documento.estado|lower == "error" %}
+                        <button id="sent_mh" class="btn btn-sm btn-light" title="re-enviar a hacienda"><i
+                                id="paper-plane_icon" class="fa-solid fa-paper-plane"></i></button>
+                        <button id="edit_cliente" class="btn btn-sm btn-danger" title="Editar Cliente"><i
+                                class="fa-sharp fa-solid fa-circle-exclamation"></i></button>
+                        {% elif documento.estado == "ENVIADO"%}
+                        <button id="update_lote" class="btn btn-sm btn-warning" title="actualizar datos Lote"><i
+                                id="fa-cubes" class="fa-solid  fa-cubes"></i></button>
+                        {% elif documento.estado == "ERR_INVALI"%}
+                        <button id="edit_cliente" class="btn btn-sm btn-danger" title="Editar Cliente"><i class="fa-sharp fa-solid fa-circle-exclamation"></i></button>
+                        <button id="download_docs" class="btn btn-sm btn-warning" title="Descargar Archivos"><i class="fa-solid fa-download"></i></button>
+                        {% endif %}
+                        <!--
+                        {% if documento.anuladoErp and documento.estado == "PROCESADO" or documento.estado == "ERR_INVALI" %}
+                        {% if documento.tipodocumento == '03' or documento.tipodocumento == '05' %}
+                        {% if documento.observaciones_mh and 'DTE ESTA RELACIONADO CON OTRO DTE' not in documento.observaciones_mh %}
+                        <button id="edit_documento" class="btn btn-sm btn-alert" title="Generar Modificación a DTE"><i
+                                class="fa fa-info-circle"></i></button>
+                        {% endif %}
+                        {% endif %}
+                        <!- <button id="show_data"  class="btn btn-sm btn-primary" title="Mostrar Informacion"><i class="fa-sharp fa-solid fa-eye"></i></button> ->
+                        {% endif %}
+                        -->
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+    <!-- Modal -->
+
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Observaciones MH</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="overlay-content"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cerrarModal" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="Modal_json" tabindex="-1" aria-labelledby="ModalJsonLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalJsonLabel">Información</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="jsonContainer"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="regenerarButton" type="button" class="btn btn-primary" style="display:none;">Regenerar Documentos</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--JavaScrip-->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="{% static 'js/contingencias.js' %}"></script>
+    <script src="{% static 'js/popup_contingencia.js' %}" defer></script>
+
+</body>
+</html>

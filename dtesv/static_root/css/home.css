@@ -1,0 +1,385 @@
+/* Agrega una animación intermitente */
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+   
+}
+
+/* Estilos para el encabezado (header) */
+header {
+  background-color: #2f6ec2;
+  color: #ececec;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  height: 60px; 
+  
+}
+#loader-container {
+  display: flex;
+  align-items: center; /* Centra verticalmente los elementos */
+}
+
+#loader img {
+  width: 20px; /* Ajusta el ancho deseado de la imagen */
+  height: auto; /* Mantiene la proporción de la imagen */
+  margin-left: 5px; /* Ajusta el margen izquierdo entre el botón y la imagen */
+}
+#loader span {
+  animation: blink 1s infinite;
+}
+ 
+.user-info {
+    text-align: right;
+
+  }
+  
+  .user-info span {
+    margin-right: 10px;
+  }
+  
+  .user-info select {
+    padding: 5px;
+    border-radius: 5px;
+  }
+  
+  .user-dropdown {
+    position: relative;
+  }
+  
+  .dropdown-content {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    display: none;
+  }
+  
+  .user-dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0px; /* Ajusta el ancho según tus necesidades */
+    height: 100%;
+    z-index: 1;
+    overflow-x: hidden;
+    padding-top: 80px;
+    color: #2f6ec2;
+    background-color: #2f6ec2; /* Agrega el color de fondo deseado */
+    transition: 0.5s;
+}
+.sidebar a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size:  12px;
+    color: #0e0d0d;
+    display:block;
+
+}
+
+.sidebar a:hover
+{
+    color: #dabb11;
+
+
+
+}
+.sidebar.open {
+  width: 150px; /* Ancho deseado de la barra lateral cuando está abierta */
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px;
+}
+
+.sidebar ul li {
+    margin-bottom: 5px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.main-content {
+  margin-top: 10px; /* Ajusta el valor según tus necesidades */
+  padding: 10px; /* Ajusta el relleno según tus necesidades */
+  transition: margin-left 0.5s;
+
+}
+.main-content.open {
+  margin-left: 200px; /* Ajusta el margen izquierdo cuando la barra lateral está abierta */
+}
+
+
+table.dataTable {
+    width: 100% !important;
+  }
+  
+  table.dataTable thead th,
+  table.dataTable tfoot th,
+  table.dataTable thead td,
+  table.dataTable tfoot td {
+    white-space: nowrap;
+  }
+  
+  table.dataTable tbody td {
+    word-break: break-word;
+
+  }
+
+.truncate-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px; /* Ajusta el ancho deseado para mostrar los 50 caracteres */
+    cursor: pointer;
+  }
+
+table.dataTable td {
+  font-size: 12px; /* Ajusta el tamaño de fuente deseado */
+}
+
+table.dataTable th {
+  font-size: 12px; /* Ajusta el tamaño de fuente deseado */
+}
+.datatable-style {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .datatable-style th,
+  .datatable-style td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    
+  font-size: 12px; /* Ajusta el tamaño de fuente deseado */
+ 
+  }
+  
+  .datatable-style th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: left;
+    font-size: 12;
+  }
+  
+  .datatable-style tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .datatable-style tbody tr:hover {
+    background-color: #e9e9e9;
+  }
+  
+  .datatable-style .dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 5px;
+    margin-left: 2px;
+    border: 1px solid #ddd;
+    background-color: #f2f2f2;
+    color: #555;
+    cursor: pointer;
+  }
+  
+  .datatable-style .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #ddd;
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+
+  .datatable-style .dataTables_wrapper .dataTables_paginate .paginate_button {
+    display: inline-block;
+  }
+  .datatable-style tbody tr:nth-child(-n+3) td:first-child {
+    max-height: 50px; /* Ajusta la altura deseada */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+.centered{
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+.fixed-column {
+    width: 200px !important;  /* Ajusta el ancho deseado para la columna */
+    word-wrap: break-word !important; 
+  }
+  
+  .expanding-cell {
+    cursor: pointer !important;
+  }
+
+  
+
+  #overlay-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+  }
+
+  #overlay-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+  }
+
+  #myModal .modal-body {
+     
+    overflow-y: auto;
+    width: 500px; /* Ancho personalizado */
+    height: 300px; /* Alto personalizado */
+    margin-top: 10px;
+  }
+  #Modal_json .modal-body {
+     
+    overflow-y: auto;
+    width: 500px; /* Ancho personalizado */
+    height: 370px; /* Alto personalizado */
+    margin-top: 10px;
+     
+  }
+
+  #jsonContainer {
+    background-color: #f8f8f8;
+    padding: 10px;
+    border: 1px solid #ccc;
+    white-space: pre-wrap;
+    font-family: monospace;
+   
+  }
+ /* CSS para los botones del sidebar */
+.sidebar-button {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #fff;
+  background-color: #2f6ec2;
+  border-radius: 15px;
+  margin-bottom: 10px;
+  margin: 0 0 5px -10px !important; /* Ajusta los márgenes aquí */
+  
+}
+
+.sidebar-button:hover {
+  background-color: #2f6ec2;
+}
+
+.sidebar-button.active {
+  background-color: #2f6ec2;
+}
+
+
+/* Estilos para los botones de hamburguesa */
+#toggleSidebar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+#toggleSidebar span {
+  font-size: 20px;
+  color: #636dfa;
+  margin-right: 8px; /* Ajusta el espacio entre el ícono y el texto según tus preferencias */
+}
+
+.menu-text {
+  font-size: 16px;
+  color: #0a0a0a;
+}
+
+#hideSidebar {
+  background-color: transparent; /* Fondo transparente */
+  border: 1.5px solid #ffffff; /* Borde negro */
+  border-radius: 45%; /* Hace que el botón sea redondo */
+  color: #ffffff; /* Color del texto (flecha) */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 3px; /* Ajusta el relleno según sea necesario */
+}
+
+#hideSidebar span {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.menu-text {
+  font-size: 16px;
+}
+
+.table-container {
+  max-height: 500px; /* Establece la altura máxima deseada */
+  overflow-y: auto;  
+  margin-bottom: 20px; 
+  width: 99.9%;
+}
+
+.table-container table {
+  width: 100%;
+  table-layout: fixed; /* Fuerza a que las columnas tengan el ancho especificado */
+  margin-bottom: 20px; 
+  
+}
+
+.table-container tbody {
+  display: block;
+  height: 600px; /* Ajusta la altura máxima según sea necesario */
+  overflow-y: auto; /* Habilita la barra de desplazamiento vertical */
+}
+
+.table-container thead,
+.table-container tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* Fuerza a que las columnas tengan el ancho especificado */
+ 
+}
+
+html, body {
+  overflow-x: hidden; /* Oculta la barra de desplazamiento horizontal */
+  overflow-y: auto; /* Mantiene la barra de desplazamiento vertical */
+}
+.dataTables_scrollBody {
+  overflow-x: auto;
+}
+.table-responsive {
+  width: 100%;
+  height: 10%;
+  overflow-y: auto; /* Habilite la barra de desplazamiento vertical cuando sea necesario */
+  overflow-x: auto;
+  display: block;
+}
+.column-hidden {
+  font-style: italic;
+  color: #999;
+}

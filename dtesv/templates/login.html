@@ -1,0 +1,61 @@
+{% load static %}
+
+{% block extrahead %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+
+{% block content %}
+  <div class="login-form d-flex justify-content-center align-items-center">
+    <form method="post" action="{% url 'dtesv:login' %}" class="text-center small">
+      {% csrf_token %}
+      <img src="{% static 'img/logo.png' %}" alt="Logo" class="img-fluid mb-4" style="max-width: 200px;">
+
+      <div class="form-group">
+        <label for="username" class="d-sm-inline d-none">Usuario:</label>
+        <input type="text" id="username" name="username" class="form-control ml-sm-3" placeholder="Usuario">
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="d-sm-inline d-none">Contraseña:</label>
+        <div class="input-group ml-sm-3">
+          <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña">
+          <div class="input-group-append">
+            <span class="input-group-text toggle-password" id="togglePassword">
+              <i class="fa fa-eye"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block mb-3">Iniciar sesión</button>
+
+      {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+            <li class="{% if message.tags %}{{ message.tags }}{% endif %}">
+              {{ message }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <a href="https://distribuidoramorazan.com" class="home-link d-block text-center">Home</a>
+    </form>
+  </div>
+{% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+<script>
+  $(document).ready(function() {
+    $('.toggle-password').click(function() {
+      var passwordField = $('#password');
+      var passwordFieldType = passwordField.attr('type');
+      passwordField.attr('type', passwordFieldType === 'password' ? 'text' : 'password');
+    });
+  });
+</script>

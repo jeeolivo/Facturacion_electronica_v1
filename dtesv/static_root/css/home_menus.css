@@ -1,0 +1,62 @@
+/* Estilos para la barra de navegación (nav-bar) */
+.nav-bar {
+    background-color:  #2f6ec2;
+    text-align: right;
+    padding: 20px;
+    margin-top: 30px; /* Reduzco el margen superior para dejar espacio al encabezado */
+    z-index: 100;
+    position: sticky;
+    display: flex;
+    justify-content: flex-end;
+    top: 0;
+
+}
+
+.nav-bar ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+}
+
+.nav-bar ul li {
+    margin-left: 0px;
+}
+
+.nav-bar .header-button {
+    background-color:  #2f6ec2;
+    color: rgb(255, 255, 255);
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius:0px ;
+}
+
+/* Agregamos una media query para hacer responsivos los botones */
+@media screen and (max-width: 768px) {
+    .nav-bar {
+        padding: 0;
+        margin-top: 0;
+        flex-direction: column; /* Cambiamos la dirección de flexión a columna */
+        align-items: center; /* Centramos los elementos verticalmente */
+    }
+
+    .nav-bar ul {
+        flex-direction: column; /* Cambiamos la dirección de flexión a columna para la lista */
+    }
+
+    .nav-bar ul li {
+        margin-left: 0; /* Quitamos el margen izquierdo en dispositivos pequeños */
+        margin-bottom: 10px; /* Agregamos un margen inferior entre botones */
+    }
+}
+
+
+#fecha-hora {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}

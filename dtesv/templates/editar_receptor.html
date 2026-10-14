@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/receptor.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  <h2 class="mb-4">Editar Receptor: {{ tipo_receptor }}</h2>
+  <form method="post" class="needs-validation" novalidate>
+    <input type="hidden" name="_method" value="PUT">
+
+    {% csrf_token %}
+    {% if mensaje_exito %}
+    <div id="mensaje-exito" class="alert alert-success mt-3">
+      {{ mensaje_exito }}
+    </div>
+    {% endif %}
+    {% if form.errors %}
+    <div class="alert alert-danger">
+      {{ form.errors }}
+    </div>
+    {% endif %}
+
+    <!-- Inicia el grid para dos columnas -->
+    <div class="row">
+
+      <!-- Primera columna -->
+      <div class="col-md-6">
+
+        <div class="form-group mb-3">
+          {{ form.codigo.label_tag }}
+          {{ form.codigo }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.nombre.label_tag }}
+          {{ form.nombre }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.tipodocumento.label_tag }}
+          {{ form.tipodocumento }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.codactividad.label_tag }}
+          {{ form.codactividad }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.telefono.label_tag }}
+          {{ form.telefono }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.complemento.label_tag }}
+          {{ form.complemento }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.tipopersona.label_tag }}
+          {{ form.tipopersona }}
+        </div>
+
+      </div> <!-- Fin de la primera columna -->
+
+      <!-- Segunda columna -->
+      <div class="col-md-6">
+
+        <div class="form-group mb-3">
+          {{ form.nrc.label_tag }}
+          {{ form.nrc }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.nombrecomercial.label_tag }}
+          {{ form.nombrecomercial }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.numdocumento.label_tag }}
+          {{ form.numdocumento }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.correo.label_tag }}
+          {{ form.correo }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.departamento.label_tag }}
+          <select id="id_departamento" name="departamento" class="form-control">
+            <option value="">Seleccione Departamento</option>
+            {% for departamento in departamentos %}
+              <option value="{{ departamento.codigo }}" {% if departamento.codigo == form.departamento.value %}selected{% endif %}>
+                {{ departamento.nombre }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="form-group mb-3">
+          <!-- {{ form.municipio.label_tag }} -->
+          <label for="id_municipio">Distrito:</label>
+          <select id="id_municipio" name="municipio" class="form-control">
+            <option value="">Seleccione Municipio</option>
+            {% for municipio in municipios %}
+              <option value="{{ municipio.id }}" {% if municipio.id == form.municipio.value %}selected{% endif %}>
+                {{ municipio.nombre }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="form-group mb-3">
+          <!-- {{ form.munidistrito.label_tag }} -->
+          <label for="id_distrito">Municipio:</label>
+          <select id="id_distrito" name="munidistrito" class="form-control">
+            <option value="">Seleccione Distrito</option>
+            {% for distrito in distritos %}
+              <option value="{{ distrito.id  }}" {% if distrito.id == form.munidistrito.value %}selected{% endif %}>
+                {{ distrito.nombre }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="form-group mb-3">
+          {{ form.codpais.label_tag }}
+          {{ form.codpais }}
+        </div>
+
+        <div class="form-group mb-3">
+          {{ form.tiporeceptor.label_tag }}
+          {{ form.tiporeceptor }}
+        </div>
+
+      </div> <!-- Fin de la segunda columna -->
+
+    </div> <!-- Fin del grid de dos columnas -->
+
+    {% if perms.dtesv.change_receptor %}
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </div>
+    {% endif %}
+
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+<script src="{% static 'js/edit_receptor.js' %}"></script>
+<!-- script>
+$(document).ready(function() {
+    if ($("#mensaje-exito").length > 0) {
+        $("#mensaje-exito").fadeIn("slow");
+        setTimeout(function() {
+            $("#mensaje-exito").fadeOut("slow");
+        }, 10000);
+    }
+});
+</script -->
+
+<!-- Este script permite hacer la carga dinamica de los municipios y distritos -->
+<script>
+  window.onload = function () {
+    window.resizeTo(850, 1000); // Ajusta el tamaño de la ventana
+  };
+
+  $(document).ready(function () {
+    // Obtener los campos de departamento, municipio y distrito
+    var $departamentoSelect = $('#id_departamento');
+    var $municipioSelect = $('#id_municipio');
+    var $distritoSelect = $('#id_distrito');
+    console.log("Valor de departamento: ", $departamentoSelect)
+    console.log("Valor de municipio: ", $municipioSelect)
+    console.log("Valor de distrito: ", $distritoSelect)
+    // Función para cargar municipios y distritos basados en el departamento seleccionado
+    function cargarMunicipios(departamentoId, municipioIdSeleccionado, distritoIdSeleccionado) {
+      $municipioSelect.empty();
+      $municipioSelect.append('<option value=""> Seleccione Distrito </option>');
+
+      $distritoSelect.empty();
+      $distritoSelect.append('<option value=""> Debe seleccionar un distrito </option>');
+
+      if (departamentoId) {
+        $.ajax({
+          url: "{% url 'dtesv:get_municipios' %}",
+          data: {
+            'departamento_id': departamentoId
+          },
+          success: function (data) {
+            //console.log("Municipios recibidos: ", data);
+            $.each(data, function (index, municipio) {
+              // Agregar los municipios al campo select
+              var option = $('<option>')
+                .text(municipio.nombre)
+                .attr('value', municipio.id)
+                .data('distr_munic', municipio.distr_munic);
+
+              if (municipio.id == municipioIdSeleccionado) {
+                option.attr('selected', 'selected');
+              }
+
+              $municipioSelect.append(option);
+            });
+
+            // Después de cargar los municipios, cargar los distritos si hay un municipio seleccionado
+            if (municipioIdSeleccionado) {
+              cargarDistritos(municipioIdSeleccionado, distritoIdSeleccionado);
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error('Error al cargar municipios:', error);
+          }
+        });
+      }
+    }
+
+    // Función para cargar distritos basado en el municipio seleccionado
+    function cargarDistritos(municipioId, distritoIdSeleccionado) {
+      $distritoSelect.empty();
+      $distritoSelect.append('<option value=""> Seleccione un distrito </option>');
+
+      if (municipioId) {
+        // Aquí deberías hacer una solicitud AJAX para cargar los distritos basados en el municipio seleccionado
+        // Por simplicidad, se omite la lógica AJAX del distrito, pero sería similar a la de municipios.
+
+        // Ejemplo de cómo podrías agregar distritos:
+        $.ajax({
+          url: "{% url 'dtesv:get_distritos' %}",
+          data: {
+            'municipio_id': municipioId
+          },
+          success: function (data) {
+            $.each(data, function (index, distrito) {
+              var option = $('<option>')
+                .text(distrito.nombre)
+                .attr('value', distrito.id);
+
+              if (distrito.id == distritoIdSeleccionado) {
+                option.attr('selected', 'selected');
+              }
+
+              $distritoSelect.append(option);
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error('Error al cargar distritos:', error);
+          }
+        });
+      }
+    }
+
+    // Manejar el cambio en el campo de departamento
+    $('#id_departamento').on('change', function () {
+      var departamentoId = $(this).val();
+      var $municipioSelect = $('#id_municipio');
+      var $distritoSelect = $('#id_distrito');
+
+      console.log("Valor de departamentoId seleccionado: ", departamentoId);
+
+      // Vaciar el campo de municipios y distritos
+      $municipioSelect.empty();
+      $municipioSelect.append('<option value=""> Seleccione Distrito </option>');
+      $('#id_distrito').empty(); // Asegúrate de que el ID de distrito sea correcto
+      $('#id_distrito').append('<option value=""> Debe seleccionar un distrito </option>');
+
+      if (departamentoId) {
+        $.ajax({
+          url: "{% url 'dtesv:get_municipios' %}",
+          data: {
+            'departamento_id': departamentoId
+          },
+          success: function (data) {
+            //console.log("Municipios recibidos: ", data);
+            $.each(data, function (index, municipio) {
+              // Cuando seleccionas un municipio, usa 'municipio.distr_munic' como valor
+              console.log("codigo Distrito: ", municipio.distr_munic);
+              $municipioSelect.append($('<option>').text(municipio.nombre).attr('value', municipio.id).data('distr_munic', municipio.distr_munic));
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error('Error al cargar municipios:', error);
+          }
+        });
+      }
+    });
+
+    // Manejar el cambio en el campo de municipio
+    $('#id_municipio').on('change', function () {
+      var municipioId = $(this).val();
+      var distrMunic = $(this).find(':selected').data('distr_munic')
+      var $distritoSelect = $('#id_distrito');
+
+      // Mostrar el valor de municipioId en la consola
+      console.log("Valor de municipioId seleccionado: ", municipioId);
+      console.log("Valor de distrMunic seleccionado: ", municipioId.distr_munic);
+
+      // Vaciar el campo de distritos
+      $distritoSelect.empty();
+      $distritoSelect.append('<option value=""> Seleccione Municipio </option>');
+
+      if (distrMunic) {
+        $.ajax({
+          url: "{% url 'dtesv:get_distritos' %}",
+          data: {
+            'municipio_id': distrMunic    // Envio el valor almacemado en el campo cod_distrmuni(distr_muni)
+          },
+          success: function (data) {
+            //console.log("Distritos recibidos: ", data);
+            $.each(data, function (index, distrito) {
+              console.log("Distrito: ", distrito);
+              $distritoSelect.append($('<option>').text(distrito.nombre).attr('value', distrito.id));
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error('Error al cargar distritos:', error);
+          }
+        });
+      }
+    });
+
+    // Mostrar el mensaje de éxito si existe en el DOM
+    if ($("#mensaje-exito").length > 0) {
+      $("#mensaje-exito").fadeIn("slow"); // Muestra el mensaje con una animación de desvanecimiento
+      // Después de 5 segundos, oculta el mensaje
+      setTimeout(function () {
+        $("#mensaje-exito").fadeOut("slow");
+      }, 10000); // Cambia este valor si deseas que el mensaje se muestre durante más o menos tiempo
+    }
+  });
+</script>
+
+{% endblock %}

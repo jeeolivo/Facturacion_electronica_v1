@@ -1,0 +1,8 @@
+/* Ocultar el botón Home en el menú de navegación */
+#header .app-logo {
+    display: none;
+  }
+
+#header a[href="/admin/"] {
+    display: none;
+}

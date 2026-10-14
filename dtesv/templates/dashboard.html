@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <!--Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-B5BGkOK86rIMBoErnsUZ9iQAmoUDKwFfT4oxR92WitNRHRrBS+lRUW2FJOD6E+0MHNPYSe5n+T/lYkQYY0bIdQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Enlace a archivos CSS adicionales si es necesario -->
+    <link rel="stylesheet" href="{% static 'css/chart.css' %}">
+</head>
+
+<body>
+    <div class="header">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row">
+                    <p class="txtRight">Usuarios en línea: {{ usuarios_en_linea }}</p>
+                    <!-- div class="col-md-12 d-flex justify-content-between align-items-center">
+                        <section class="filters-section">
+                            <h3> Filtrar Dashboard </h3>
+                            <div class="d-flex">
+                                <label for="filtro" class="me-2">Selecciona el mes:</label>
+                                <select id="filtro" class="form-select me-2"
+                                    onchange="cargarDashboard(); mostrarInputFiltro();">
+                                    <option value="mesActual" selected>Mes Actual</option>
+                                    <option value="mesAnterior">Mes Anterior</option>
+                                    <option value="mesExacto">Mes Especifico</option>
+                                    <option value="diaActual">Día Actual</option>
+                                    <option value="diaExacto">Día Especifico</option>
+                                </select>
+
+                                <!-- Input para seleccionar un mes exacto (se muestra solo cuando se elige "Mes Exacto") ->
+                                <div id="mes-exacto-container" style="display:none;">
+                                    <label for="mes-exacto">Seleccionar Mes:</label>
+                                    <select id="mes-exacto">
+                                        <option value="1">Enero</option>
+                                        <option value="2">Febrero</option>
+                                        <option value="3">Marzo</option>
+                                        <option value="4">Abril</option>
+                                        <option value="5">Mayo</option>
+                                        <option value="6">Junio</option>
+                                        <option value="7">Julio</option>
+                                        <option value="8">Agosto</option>
+                                        <option value="9">Septiembre</option>
+                                        <option value="10">Octubre</option>
+                                        <option value="11">Noviembre</option>
+                                        <option value="12">Diciembre</option>
+                                    </select>
+
+                                    <label for="anio-exacto">Seleccionar Año:</label>
+                                    <select id="anio-exacto">
+                                        <!-- Puedes añadir más años según tu necesidad ->
+                                        <option value="2022">2022</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                    </select>
+                                </div>
+
+                                <!-- Input para seleccionar un día exacto (se muestra solo cuando se elige "Día Exacto") ->
+                                <input type="date" id="dia-exacto" style="display:none;">
+                                <div class="input-group me-2">
+                                    <span class="input-group-text">Desde:</span>
+                                    <input type="date" id="fecha_desde" name="fecha_desde" class="form-control">
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-text">Hasta:</span>
+                                    <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control">
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div> <!-- Fin del row -->
+
+                <div class="row">
+                    <!-- Sección del gráfico y la tabla -->
+                    <div class="dt-content1">
+                        <h5 class="txt-content1">Resumen Documentos</h5>
+                        <div class="chart-section chart-center">
+                            <canvas class="chart" id="chartContainer"></canvas>
+                        </div>
+                    </div>
+                    <div class="dt-content2">
+                        <h5 class="txtRight">Documentos No Enviados a Receptor</h5>
+                        <div class="documentos-no-enviados dt-content2">
+                            <table id="tablaDocumentosNoEnviados" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Número de Documento</th>
+                                        <th>Código del Cliente</th>
+                                        <th>Nombre del Cliente</th>
+                                        <th>Fecha del Documento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Aquí se llenarán los datos con JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div> <!-- Fin del row -->
+
+                <!-- <div class="email-section w-100">
+                    <h5>Cantidad de correos por defecto (efactura@lamorazan.com)</h5>
+                    <div class="email-card">
+                        <p>Correos en Receptores: <span id="receptores-count">{{ receptores_count }}</span></p>
+                    </div>
+                    <div class="email-card">
+                        <p>Correos en Proveedores: <span id="proveedores-count">{{ proveedores_count }}</span></p>
+                    </div>
+                </div> -->
+
+                <div class="row">
+                    <section class="dt-content1 w-100">
+                        <h5 class="txt-content1">Total de Documentos</h5>                        
+                        <div class="chart-section w-100 chart-center">
+                            <canvas class="chart-extended" id="documentosEstadoChart"></canvas>
+                        </div>
+                    </section>
+                    
+                </div> <!-- Fin del row -->
+            </div> <!-- Fin del header-body -->
+        </div> <!-- Fin del container-fluid -->
+    </div> <!-- Fin del header -->
+
+    <!-- Incluir filtros.js -->
+    <script src="/static/js/argon.js?v=1.2.0"></script>
+    <script src="{% static 'js/home.js' %}" defer></script>
+    <script src="{% static 'js/documentos.js' %}"> console.log("Dando lectura a Documentos.js") </script>
+    <script src="{% static 'js/dashboard.js' %}"> console.log("Dando lectura a Dashboard.js")</script>
+
+</body>
+
+</html>
